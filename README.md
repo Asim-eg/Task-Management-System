@@ -53,6 +53,7 @@ To create a new task, make a POST request to `/tasks` with the following JSON pa
   "updatedAt": "2024-01-04T12:00:00Z",
   "author": "John Doe"
 }
+```
 
 # Updating a Task
 To update an existing task, make a PUT request to `/tasks/:id` with the updated task details in the JSON payload.
