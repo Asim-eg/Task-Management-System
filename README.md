@@ -73,6 +73,3 @@ This project is licensed under the [MIT License](LICENSE.md).
 ## Acknowledgements
 - [Gin - HTTP web framework written in Go](https://github.com/gin-gonic/gin)
 - [MongoDB Go Driver](https://github.com/mongodb/mongo-go-driver)
-
-Feel free to customize this README according to your needs and include any additional information specific to your project.
-
