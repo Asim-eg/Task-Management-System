@@ -4,16 +4,23 @@ import (
 	controller "TaskManage/Controller"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/markbates/pkger"
 )
 
-func Init() {
-	Tasks := gin.Default()
-	Tasks.Group("/tasks")
-	Tasks.GET("/", controller.GetTasks)
-	Tasks.POST("/", controller.CreateTask)
-	Tasks.PUT("/:id", controller.UpdateTask)
-	Tasks.DELETE("/:id", controller.DeleteTask)
-	Tasks.GET("/:id", controller.GetTaskById)
+func Init() *gin.Engine {
+	router := gin.Default()
+	// Define API routes
+	api := router.Group("/tasks")
+	{
+		api.GET("/", controller.GetTasks)
+		api.POST("/", controller.CreateTask)
+		api.PUT("/:id", controller.UpdateTask)
+		api.DELETE("/:id", controller.DeleteTask)
+		api.GET("/:id", controller.GetTaskById)
+	}
 
-	Tasks.Run(":8080")
+	// Run the server
+	router.Run(":8080")
+
+	return router
 }

@@ -4,6 +4,7 @@ import (
 	models "TaskManage/Models"
 	"context"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,6 +38,7 @@ func Init() {
 
 }
 
+// GetTasks retrieves all tasks from the database.
 func GetTasks(ctx *gin.Context) {
 	log.Println("Request for Get Tasks Arrived")
 	var response []models.Tasks
@@ -59,7 +61,7 @@ func GetTasks(ctx *gin.Context) {
 		response = append(response, task)
 	}
 
-	//Return the Response
+	// Return the Response
 	ctx.JSON(200, struct {
 		Message string         `json:"message"`
 		Data    []models.Tasks `json:"data"`
@@ -70,6 +72,7 @@ func GetTasks(ctx *gin.Context) {
 	return
 }
 
+// CreateTask creates a new task and stores it in the database.
 func CreateTask(ctx *gin.Context) {
 	log.Println("Request for Create Task Arrived")
 	var task models.Tasks
@@ -79,6 +82,10 @@ func CreateTask(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"message": "Error in Parsing Request Body"})
 		return
 	}
+
+	// Additional functionality: Add comments and share field
+	task.Comments = []string{} // Initialize an empty comments array
+	task.Shared = false        // Set the shared field to false by default
 
 	_, err := taskCollection.InsertOne(ctx, task)
 	if err != nil {
@@ -91,6 +98,7 @@ func CreateTask(ctx *gin.Context) {
 	return
 }
 
+// UpdateTask updates an existing task in the database.
 func UpdateTask(ctx *gin.Context) {
 	log.Println("Request for Update Task Arrived")
 	taskID := ctx.Param("id")
@@ -101,6 +109,9 @@ func UpdateTask(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"message": "Error in Parsing Request Body"})
 		return
 	}
+
+	// Additional functionality: Update updatedAt field
+	updatedTask.UpdatedAt = time.Now().String()
 
 	filter := bson.M{"_id": taskID}
 	update := bson.M{"$set": updatedTask}
@@ -121,6 +132,7 @@ func UpdateTask(ctx *gin.Context) {
 	return
 }
 
+// DeleteTask deletes a task from the database.
 func DeleteTask(ctx *gin.Context) {
 	log.Println("Request for Delete Task Arrived")
 	taskID := ctx.Param("id")
@@ -142,6 +154,7 @@ func DeleteTask(ctx *gin.Context) {
 	return
 }
 
+// GetTaskById retrieves a task by its ID from the database.
 func GetTaskById(ctx *gin.Context) {
 	log.Println("Request for Get Task by ID Arrived")
 	taskID := ctx.Param("id")

@@ -13,6 +13,7 @@ func main() {
 	controller.Init()
 
 	//Init the Router
+	//go:embed Frontend/index.html
 	routes.Init()
 	return
 }
