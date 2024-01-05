@@ -3,7 +3,9 @@ package controller
 import (
 	models "TaskManage/Models"
 	"context"
+	"fmt"
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -83,6 +85,9 @@ func CreateTask(ctx *gin.Context) {
 		return
 	}
 
+	// Generate a random ID for the task
+	task.Id = generateRandomID()
+
 	// Additional functionality: Add comments and share field
 	task.Comments = []string{} // Initialize an empty comments array
 	task.Shared = false        // Set the shared field to false by default
@@ -113,7 +118,7 @@ func UpdateTask(ctx *gin.Context) {
 	// Additional functionality: Update updatedAt field
 	updatedTask.UpdatedAt = time.Now().String()
 
-	filter := bson.M{"_id": taskID}
+	filter := bson.M{"id": taskID}
 	update := bson.M{"$set": updatedTask}
 
 	result, err := taskCollection.UpdateOne(ctx, filter, update)
@@ -137,7 +142,7 @@ func DeleteTask(ctx *gin.Context) {
 	log.Println("Request for Delete Task Arrived")
 	taskID := ctx.Param("id")
 
-	filter := bson.M{"_id": taskID}
+	filter := bson.M{"id": taskID}
 	result, err := taskCollection.DeleteOne(ctx, filter)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -160,7 +165,7 @@ func GetTaskById(ctx *gin.Context) {
 	taskID := ctx.Param("id")
 
 	var task models.Tasks
-	filter := bson.M{"_id": taskID}
+	filter := bson.M{"id": taskID}
 
 	err := taskCollection.FindOne(ctx, filter).Decode(&task)
 	if err != nil {
@@ -175,4 +180,17 @@ func GetTaskById(ctx *gin.Context) {
 
 	ctx.JSON(200, gin.H{"message": "Success", "data": task})
 	return
+}
+
+func generateRandomID() string {
+	// Seed the random number generator with the current time
+	rand.Seed(time.Now().UnixNano())
+
+	// Generate a random number between 1 and 1000
+	randomNumber := rand.Intn(1000) + 1
+
+	// Convert the random number to a string
+	randomID := fmt.Sprintf("%d", randomNumber)
+
+	return randomID
 }

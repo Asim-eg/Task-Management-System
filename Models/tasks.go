@@ -1,7 +1,7 @@
 package models
 
 type Tasks struct {
-	Id          int      `json:"id" bson:"id"`
+	Id          string      `json:"id" bson:"id"`
 	Name        string   `json:"name" bson:"name"`
 	Description string   `json:"description" bson:"description"`
 	IsCompleted bool     `json:"isCompleted" bson:"isCompleted"`
