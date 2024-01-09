@@ -33,7 +33,6 @@ submitButton.addEventListener('click', handleFormSubmit);
 async function handleFormSubmit(event) {
   event.preventDefault();
   const authorNameInput = document.getElementById('authorName');
-  //console.log(authorNameInput);
   const taskNameInput = document.getElementById('taskName');
   const taskDescriptionInput = document.getElementById('taskDescription');
 
@@ -53,8 +52,6 @@ async function handleFormSubmit(event) {
       comments: [],
       shared: false,
     };
-
-    //console.log(newTask);
 
     try {
       // Make API call to create task
@@ -115,19 +112,19 @@ async function renderTasks() {
 
     allTasks = await response.json();
 
-    allTasks.data.forEach((allTasks, index) => {
+    allTasks.data.forEach((task, index) => {
       const taskCard = document.createElement('div');
       taskCard.classList.add('taskCard');
       let classVal = 'pending';
       let textVal = 'Pending';
-      if (allTasks.isCompleted) {
+      if (task.isCompleted) {
         classVal = 'completed';
         textVal = 'Completed';
       }
       taskCard.classList.add(classVal);
 
       const taskText = document.createElement('p');
-      taskText.innerText = allTasks.name;
+      taskText.innerText = task.name;
 
       const taskStatus = document.createElement('p');
       taskStatus.classList.add('status');
@@ -137,15 +134,14 @@ async function renderTasks() {
       toggleButton.classList.add('button-box');
       const btnContentEl = document.createElement('span');
       btnContentEl.classList.add('green');
-      btnContentEl.innerText = allTasks.isCompleted
+      btnContentEl.innerText = task.isCompleted
         ? 'Mark as Pending'
         : 'Mark as Completed';
       toggleButton.appendChild(btnContentEl);
       toggleButton.addEventListener('click', async () => {
-        //allTasks.isCompleted = !allTasks.isCompleted;
-        allTasks.updatedAt = new Date().toISOString();
-        allTasks.isCompleted = !allTasks.isCompleted;
-        await updateTask(allTasks);
+        task.updatedAt = new Date().toISOString();
+        task.isCompleted = !task.isCompleted;
+        await updateTask(task);
         renderTasks();
       });
 
@@ -156,13 +152,64 @@ async function renderTasks() {
       delBtnContentEl.innerText = 'Delete';
       deleteButton.appendChild(delBtnContentEl);
       deleteButton.addEventListener('click', () => {
-        indexToBeDeleted = allTasks.id;
+        indexToBeDeleted = task.id;
         confirmEl.style.display = 'block';
         taskManagerContainer.classList.add('overlay');
       });
 
+
+
+      const commentsSection = document.createElement('div');
+      commentsSection.classList.add('comments-section');
+      const commentsIcon = document.createElement('div');
+      commentsIcon.classList.add('comments-icon');
+      commentsIcon.innerHTML = '&#128172;'; // Comment icon
+      commentsIcon.addEventListener('click', () =>
+        toggleComments(commentsContainer),
+      );
+
+      const commentsContainer = document.createElement('div');
+      commentsContainer.classList.add('comments-container');
+      //Add a heading Comments
+      const commentsHeading = document.createElement('h4');
+      commentsHeading.innerText = 'Comments';
+      commentsContainer.appendChild(commentsHeading);
+
+
+      // Display comments
+      task.comments.forEach((comment) => {
+        const commentElement = document.createElement('p');
+        commentElement.innerText = comment;
+        commentsContainer.appendChild(commentElement);
+      });
+
+      // Add input for new comment
+      const commentInput = document.createElement('input');
+      commentInput.placeholder = 'Add a comment...';
+      commentInput.classList.add('task-input'); // Apply the same styling as the form inputs
+
+      // Add button to submit comment
+      const addCommentButton = document.createElement('button');
+      addCommentButton.innerText = 'Add Comment';
+      addCommentButton.classList.add('task-submit-button'); // Apply the same styling as the form submit button
+      addCommentButton.addEventListener('click', async () => {
+        const newComment = commentInput.value.trim();
+        if (newComment !== '') {
+          task.comments.push(newComment);
+          await updateTask(task);
+          renderTasks();
+        }
+      });
+
+      commentsContainer.appendChild(commentInput);
+      commentsContainer.appendChild(addCommentButton);
+
+      taskCard.appendChild(commentsIcon);
+      taskCard.appendChild(commentsContainer);
+
       taskCard.appendChild(taskText);
       taskCard.appendChild(taskStatus);
+      taskCard.appendChild(commentsContainer);
       taskCard.appendChild(toggleButton);
       taskCard.appendChild(deleteButton);
 
@@ -171,6 +218,10 @@ async function renderTasks() {
   } catch (error) {
     console.error(error.message);
   }
+}
+
+function toggleComments(commentsContainer) {
+  commentsContainer.classList.toggle('comments-visible');
 }
 
 // Function to make API call and update task status
