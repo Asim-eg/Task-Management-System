@@ -25,8 +25,12 @@ func Init() *gin.Engine {
 		api.GET("/:id", controller.GetTaskById)
 	}
 
-	http.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("Frontend/index.html"))))
-
+	// Serve frontend files
+	router.LoadHTMLGlob("Frontend/*.html")
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+	router.Static("/static", "Frontend/static")
 	// Run the server
 	router.Run(":8080")
 
