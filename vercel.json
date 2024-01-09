@@ -1,8 +1,10 @@
 {
-  "routes": [
+  "trailingSlash" : false,
+  "rewrites" : 
+  [
     {
-      "src": "/(.*)",
-      "dest": "/Routes"
+      "source" : "/routes(.*)",
+      "destination" : "/Routes/tasks.go"
     }
   ]
 }

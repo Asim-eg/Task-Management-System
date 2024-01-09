@@ -37,7 +37,6 @@ func Init() {
 
 	//Init the Database Table
 	taskCollection = client.Database("ManageTasks").Collection("Tasks")
-
 }
 
 // GetTasks retrieves all tasks from the database.
@@ -62,6 +61,7 @@ func GetTasks(ctx *gin.Context) {
 		}
 		response = append(response, task)
 	}
+
 
 	// Return the Response
 	ctx.JSON(200, struct {
@@ -91,7 +91,6 @@ func CreateTask(ctx *gin.Context) {
 	// Additional functionality: Add comments and share field
 	//task.Comments = []string{} // Initialize an empty comments array
 	//task.Shared = false        // Set the shared field to false by default
-
 	_, err := taskCollection.InsertOne(ctx, task)
 	if err != nil {
 		log.Fatal(err.Error())
