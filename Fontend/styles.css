@@ -37,6 +37,14 @@ h1 {
   margin-top: 10px;
 }
 
+#description {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 h3 {
   margin-top: 0;
 }
@@ -46,7 +54,7 @@ h3 {
   align-items: center;
 }
 
-#taskInput {
+#taskName, #authorName{
   flex: 1;
   padding: 15px 12px;
   margin-right: 10px;
@@ -56,12 +64,41 @@ h3 {
   border-radius: 5px 0 0 5px;
   transition: background-color 0.3s ease;
 }
+#taskDescription {
+  flex: 1;
+  height: 40px;
+  padding: 15px 12px;
+  margin-right: 10px;
+  border: none;
+  background-color: #f2f2f2;
+  color: #333;
+  border-radius: 5px 0 0 5px;
+  transition: background-color 0.3s ease;
+}
 
-#taskInput::placeholder {
+#taskName::placeholder {
   color: #777;
 }
 
-#taskInput:focus {
+#taskDescription::placeholder {
+  color: #777;
+}
+
+#authorName::placeholder {
+  color: #777;
+}
+
+#authorName:focus {
+  outline: none;
+  background-color: #e6e6e6;
+}
+
+#taskDescription:focus {
+  outline: none;
+  background-color: #e6e6e6;
+}
+
+#taskName:focus {
   outline: none;
   background-color: #e6e6e6;
 }

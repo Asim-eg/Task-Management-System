@@ -89,8 +89,8 @@ func CreateTask(ctx *gin.Context) {
 	task.Id = generateRandomID()
 
 	// Additional functionality: Add comments and share field
-	task.Comments = []string{} // Initialize an empty comments array
-	task.Shared = false        // Set the shared field to false by default
+	//task.Comments = []string{} // Initialize an empty comments array
+	//task.Shared = false        // Set the shared field to false by default
 
 	_, err := taskCollection.InsertOne(ctx, task)
 	if err != nil {
@@ -109,6 +109,7 @@ func UpdateTask(ctx *gin.Context) {
 	taskID := ctx.Param("id")
 
 	var updatedTask models.Tasks
+	updatedTask.Id = taskID
 	if err := ctx.BindJSON(&updatedTask); err != nil {
 		log.Fatal(err.Error())
 		ctx.JSON(400, gin.H{"message": "Error in Parsing Request Body"})
