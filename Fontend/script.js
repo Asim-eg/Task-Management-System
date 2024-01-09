@@ -20,15 +20,20 @@ const Tasks = [
 
 let allTasks = [...Tasks];
 
+const form = document.getElementById('taskForm');
+const submitButton = document.getElementById('submit');
+
 // Add event listener to the form submit event
-document
-  .getElementById('taskForm')
-  .addEventListener('submit', handleFormSubmit);
+form.addEventListener('submit', handleFormSubmit);
+
+// Add event listener to the button click event
+submitButton.addEventListener('click', handleFormSubmit);
 
 // Function to handle form submission
 async function handleFormSubmit(event) {
   event.preventDefault();
   const authorNameInput = document.getElementById('authorName');
+  //console.log(authorNameInput);
   const taskNameInput = document.getElementById('taskName');
   const taskDescriptionInput = document.getElementById('taskDescription');
 
@@ -44,22 +49,34 @@ async function handleFormSubmit(event) {
       isCompleted: false,
       createdAt: new Date().toISOString(),
       updatedAt: null,
-      createdBy: authorName,
+      author: authorName,
       comments: [],
       shared: false,
     };
 
-    // Make API call to create task
-    await createTask(newTask);
+    //console.log(newTask);
 
-    // Clear input fields
-    authorNameInput.value = '';
-    taskNameInput.value = '';
-    taskDescriptionInput.value = '';
+    try {
+      // Make API call to create task
+      await createTask(newTask);
 
-    // Render tasks after creating a new task
-    renderTasks();
+      // Render tasks after creating a new task
+      renderTasks();
+    } catch (error) {
+      console.error('Error creating task:', error);
+      // Handle error as needed
+    }
   }
+  // Clear input fields
+  authorNameInput.value = '';
+  taskNameInput.value = '';
+  taskDescriptionInput.value = '';
+}
+
+// Function to handle button click (optional)
+function handleButtonClick(event) {
+  // You can add additional logic here if needed
+  console.log('Button clicked!');
 }
 
 // Function to make API call and create a new task
