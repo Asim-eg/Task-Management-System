@@ -3,6 +3,7 @@ package main
 import (
 	controller "TaskManage/Controller"
 	routes "TaskManage/Routes"
+	"context"
 	"fmt"
 )
 
@@ -14,4 +15,10 @@ func main() {
 
 	//Init the Router
 	routes.Init()
+
+	defer func() {
+		if err := controller.Client.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
 }

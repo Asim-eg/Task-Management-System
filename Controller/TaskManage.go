@@ -3,6 +3,7 @@ package controller
 import (
 	models "TaskManage/Models"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"math/rand"
@@ -16,27 +17,35 @@ import (
 
 var (
 	taskCollection *mongo.Collection
+	Client *mongo.Client
 )
 
 func Init() {
 	log.Println("Controller is Started")
 	log.Println("Initializing the Database")
 
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	client, err := mongo.Connect(context.Background(), clientOptions)
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI("mongodb+srv://asimaltafnu:defaultPassword@mongodefault.tnrc1g9.mongodb.net/?retryWrites=true&w=majority").SetServerAPIOptions(serverAPI)
+
+	tlsConfig := &tls.Config{}
+	opts.SetTLSConfig(tlsConfig)
+
+	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	Client, err := mongo.Connect(context.Background(), opts)
 	if err != nil {
 		log.Fatal(err.Error())
 		return
 	}
 
 	log.Print("Pinging the Database")
-	err = client.Ping(context.Background(), nil)
+	err = Client.Ping(context.Background(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	//Init the Database Table
-	taskCollection = client.Database("ManageTasks").Collection("Tasks")
+	taskCollection = Client.Database("ManageTasks").Collection("Tasks")
 }
 
 // GetTasks retrieves all tasks from the database.
@@ -61,7 +70,6 @@ func GetTasks(ctx *gin.Context) {
 		}
 		response = append(response, task)
 	}
-
 
 	// Return the Response
 	ctx.JSON(200, struct {
@@ -194,3 +202,5 @@ func generateRandomID() string {
 
 	return randomID
 }
+
+

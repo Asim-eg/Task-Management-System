@@ -3,6 +3,7 @@ package routes
 import (
 	controller "TaskManage/Controller"
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,7 +33,12 @@ func Init() *gin.Engine {
 	})
 	router.Static("/static", "Frontend/static")
 	// Run the server
-	router.Run(":8080")
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	router.Run(":" + port)
 
 	return router
 }
